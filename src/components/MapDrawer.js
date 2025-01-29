@@ -725,123 +725,113 @@ export default function MapDrawer() {
       {/* Pop-up on fetching the data */}
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <div className="menu p-4 bg-base-100 w-10/12 md:w-1/3 lg:w-1/4">
-          <h1 className="text-lg font-semibold title-font text-center border-b-2 pb-2 mx-auto mb-4">Air Pollution Routing - IIT KGP</h1>
+        <div className="menu p-4 bg-white shadow-lg w-10/12 md:w-1/3 lg:w-1/4">
+          <h1 className="text-lg font-semibold title-font text-center border-b-2 pb-2 mx-auto mb-4 text-gray-800">DRUM - IIT KGP</h1>
           <form>
-            <div className="flex flex-col space-y-3 items-center">
+            <div className="flex flex-col space-y-4 items-center">
               {/* From Where */}
               <input
                 type="text"
-                placeholder="Enter Source"
-                className="input input-sm input-bordered mt-0 w-full max-w-xs"
+                placeholder="Delhi"
+                className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
                 required
                 {...source}
                 value={source.value}
               />
+              TO
               <div>
                 {source.suggestions?.length > 0 && (
-                  <div name="suggestion-wrapper" className="bg-gray-600 text-white absolute right-0 w-11/12 border rounded-md z-50">
-                    {source.suggestions.map((suggestion, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="hover:cursor-pointer max-w-sm border-b-2 border-gray-400 p-2"
-                          onClick={() => {
-                            console.log(suggestion.center);
-                            source.setValue(suggestion.text);
-                            source.setPosition(suggestion.center);
-                            source.setSuggestions([]);
-                            console.log({
-                              suggestion,
-                            });
-                            setupMap({
-                              position: suggestion.center,
-                              placeName: suggestion.text,
-                              locationType: 'source',
-                            });
-                          }}>
-                          {suggestion.place_name}
-                        </div>
-                      );
-                    })}
+                  <div
+                    name="suggestion-wrapper"
+                    className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
+                    {source.suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
+                        onClick={() => {
+                          console.log(suggestion.center);
+                          source.setValue(suggestion.text);
+                          source.setPosition(suggestion.center);
+                          source.setSuggestions([]);
+                          console.log({ suggestion });
+                          setupMap({
+                            position: suggestion.center,
+                            placeName: suggestion.text,
+                            locationType: 'source',
+                          });
+                        }}>
+                        {suggestion.place_name}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
               {/* To Where */}
               <input
                 type="text"
-                placeholder="Enter Destination"
-                className="input input-sm input-bordered w-full max-w-xs"
+                placeholder="Sangam Vihar"
+                className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
                 required
                 {...destination}
                 value={destination.value}
               />
               <div>
                 {destination.suggestions?.length > 0 && (
-                  <div name="suggestion-wrapper" className="bg-gray-600 text-white absolute right-0 w-11/12 border rounded-md z-50">
-                    {destination.suggestions.map((suggestion, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="hover:cursor-pointer max-w-sm border-b-2 border-gray-400 p-2"
-                          onClick={() => {
-                            console.log(suggestion.center);
-                            destination.setValue(suggestion.text);
-                            destination.setPosition(suggestion.center);
-                            destination.setSuggestions([]);
-                            console.log({
-                              suggestion,
-                            });
-                            setupMap({
-                              position: suggestion.center,
-                              placeName: suggestion.text,
-                              locationType: 'destination',
-                            });
-                            addMarkerToMap({
-                              position: source.position,
-                              placeName: source.value,
-                              locationType: 'source',
-                            });
-                          }}>
-                          {suggestion.place_name}
-                        </div>
-                      );
-                    })}
+                  <div
+                    name="suggestion-wrapper"
+                    className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
+                    {destination.suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
+                        onClick={() => {
+                          console.log(suggestion.center);
+                          destination.setValue(suggestion.text);
+                          destination.setPosition(suggestion.center);
+                          destination.setSuggestions([]);
+                          console.log({ suggestion });
+                          setupMap({
+                            position: suggestion.center,
+                            placeName: suggestion.text,
+                            locationType: 'destination',
+                          });
+                          addMarkerToMap({
+                            position: source.position,
+                            placeName: source.value,
+                            locationType: 'source',
+                          });
+                        }}>
+                        {suggestion.place_name}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
               {/* Mode of Transport */}
-
               <div className="text-red-500 text-sm font-mono">Only one Option Available: Car*</div>
               <select
-                className="select select-sm select-bordered w-full max-w-xs"
+                className="select select-sm select-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
                 required
                 value={mode}
                 onChange={(e) => {
                   setMode(e.target.value);
                   console.log(e.target.value);
                 }}>
-                <option disabled value="none" selected>
+                <option disabled value="none">
                   -- Select Mode of Transport --
                 </option>
                 <option value="driving-traffic">Car</option>
-                {/* <option value="truck">Bus</option> */}
-                {/* <option value="car">Car - Driving</option> */}
                 <option value="scooter">Motorbike</option>
                 <option value="bike">Cycling</option>
                 <option value="foot">Walking</option>
               </select>
-
-              <div className="text-red-500 text-sm font-mono">Car Info*</div>
-
+              {/* <div className="text-red-500 text-sm font-mono">Car Info*</div> */}
               {/* <GetCarInformation /> */}
-
               <div className="text-red-500 text-sm font-mono">Important Features*</div>
               {/* <ParametersNormalizedValues /> */}
-
-              <div className="flex flex-row justify-evenly items-center">
+              <div className="flex flex-row justify-evenly items-center w-full max-w-xs">
                 <select
-                  className="select select-sm select-bordered max-w-xs"
+                  className="select select-sm select-bordered bg-gray-100 text-gray-800 w-full"
                   required
                   value={routePreference}
                   onChange={(e) => {
@@ -865,7 +855,7 @@ export default function MapDrawer() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6"
+                    className="w-6 h-6 text-gray-700 cursor-pointer"
                     onClick={() => {
                       setShowColorInfo(!showColorInfo);
                       console.log('click registered');
@@ -878,36 +868,36 @@ export default function MapDrawer() {
                   </svg>
                 </div>
               </div>
-              <div className={showColorInfo ? 'block' : 'hidden'}>
-                <div className="flex flex-row space-x-3 items-center">
+              <div className={showColorInfo ? 'block w-full max-w-xs' : 'hidden'}>
+                <div className="flex flex-row space-x-4 items-center">
                   <div className="flex flex-col justify-center items-center">
                     <div className="w-5 h-5 bg-shortest rounded-full"></div>
-                    <div className="text-xs">Shortest</div>
+                    <div className="text-xs text-gray-700">Shortest</div>
                   </div>
                   <div className="flex flex-col justify-center items-center">
                     <div className="w-5 h-5 bg-fastest rounded-full"></div>
-                    <div className="text-xs">Fastest</div>
+                    <div className="text-xs text-gray-700">Fastest</div>
                   </div>
                   <div className="flex flex-col justify-center items-center">
                     <div className="w-5 h-5 bg-leap rounded-full"></div>
-                    <div className="text-xs">LEAP</div>
+                    <div className="text-xs text-gray-700">LEAP</div>
                   </div>
                   <div className="flex flex-col justify-center items-center">
                     <div className="w-5 h-5 bg-emission rounded-full"></div>
-                    <div className="text-xs">EMISSION</div>
+                    <div className="text-xs text-gray-700">EMISSION</div>
                   </div>
                   <div className="flex flex-col justify-center items-center">
                     <div className="w-5 h-5 bg-balanced rounded-full"></div>
-                    <div className="text-xs">Optimal</div>
+                    <div className="text-xs text-gray-700">Optimal</div>
                   </div>
                 </div>
               </div>
               <button
-                className="btn btn-wide"
+                className="btn btn-wide bg-blue-600 text-white hover:bg-blue-700"
                 onClick={(e) => {
                   e.preventDefault();
                   //Fetch the routes and display on the map
-                  if (routePreference == 'all') {
+                  if (routePreference === 'all') {
                     getAllRoutes(source, destination);
                   } else {
                     getRoutes(source, destination);
@@ -929,46 +919,44 @@ export default function MapDrawer() {
             </div>
           </form>
           <div>
-            {routePreference != 'all' && (
-              <div className="text-center text-xl">
+            {routePreference !== 'all' && (
+              <div className="text-center text-xl mt-4">
                 <span className="text-blue-500">{isLoading ? prettyMetric(0).humanize() : prettyMetric(distance).humanize()}</span>
-                <span className="text-gray-500">|</span>{' '}
+                <span className="text-gray-500 mx-2">|</span>
                 <span className="text-green-400">
                   {isLoading
                     ? prettyMilliseconds(0)
-                    : mode.includes('traffic') //we have an error here...
+                    : mode.includes('traffic')
                     ? prettyMilliseconds(time * 1000)
                     : prettyMilliseconds(time)}{' '}
                 </span>
-                <span className="text-gray-500">|</span>{' '}
+                <span className="text-gray-500 mx-2">|</span>
                 <span className="text-red-500">{isLoading ? 0 : exposure?.toFixed(2)} μg/㎥ h</span>
               </div>
             )}
-            {routePreference != 'all' && (
-              <div className="collapse mt-1">
+            {routePreference !== 'all' && (
+              <div className="collapse mt-2">
                 <input type="checkbox" />
-                <div className="collapse-title text-xl font-medium text-center underline">Instructions</div>
-                <div className="collapse-content">
+                <div className="collapse-title text-xl font-medium text-center underline text-gray-800">Instructions</div>
+                <div className="collapse-content bg-gray-50 p-4 rounded-md">
                   {instructions.length > 0 && !isLoading ? (
-                    <div className="overflow-auto h-100">
-                      <ol>
-                        {instructions.map((instruction, index) => {
-                          return (
-                            <li key={index}>
-                              <Instruction key={index} index={index} instruction={instruction} mode={mode} />
-                            </li>
-                          );
-                        })}
+                    <div className="overflow-auto h-40">
+                      <ol className="list-decimal list-inside space-y-2">
+                        {instructions.map((instruction, index) => (
+                          <li key={index}>
+                            <Instruction key={index} index={index} instruction={instruction} mode={mode} />
+                          </li>
+                        ))}
                       </ol>
                     </div>
                   ) : isLoading ? (
                     <div className="flex flex-col items-center">
-                      <span className="text-sm mb-2">Fetching Data...</span>
+                      <span className="text-sm mb-2 text-gray-700">Fetching Data...</span>
                       <progress className="progress w-11/12 progress-info"></progress>
                     </div>
                   ) : (
-                    <div className="flex flex-row justify-center">
-                      <span>Wow Such Empty!!</span>
+                    <div className="flex flex-row justify-center items-center">
+                      <span className="text-gray-700">Wow Such Empty!!</span>
                       <span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -976,7 +964,7 @@ export default function MapDrawer() {
                           viewBox="0 0 24 24"
                           strokeWidth={1.5}
                           stroke="currentColor"
-                          className="w-6 h-6 ml-2">
+                          className="w-6 h-6 ml-2 text-gray-700">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -991,13 +979,14 @@ export default function MapDrawer() {
             )}
             <div className="collapse mt-2">
               <input type="checkbox" />
-              <div className="collapse-title text-xl font-medium text-center underline">Route Details</div>
-              <div className="collapse-content">
-                {routePreference == 'all' ? (
-                  <div className="overflow-auto h-72">
+              <div className="collapse-title text-xl font-medium text-center underline text-gray-800">Route Details</div>
+              <div className="collapse-content bg-gray-50 p-4 rounded-md">
+                {routePreference === 'all' ? (
+                  <div className="overflow-auto h-72 space-y-4">
+                    {/* Shortest Route */}
                     <div>
-                      <div className="font-bold underline">Shortest Route</div>
-                      <ul className="ml-2">
+                      <div className="font-bold underline text-gray-800">Shortest Route</div>
+                      <ul className="ml-4 list-disc text-gray-700">
                         <li>Route Preference: {routePreference}</li>
                         <li>Distance: {prettyMetric(shortestRoute.distance).humanize()}</li>
                         <li>Time Taken: {shortestRoute.time && prettyMilliseconds(shortestRoute.time)}</li>
@@ -1005,9 +994,11 @@ export default function MapDrawer() {
                         <li>Energy Required: {shortestRoute.totalEnergy?.toFixed(2)} kJ</li>
                       </ul>
                     </div>
+
+                    {/* Fastest Route */}
                     <div>
-                      <div className="font-bold underline">Fastest Route</div>
-                      <ul className="ml-2">
+                      <div className="font-bold underline text-gray-800">Fastest Route</div>
+                      <ul className="ml-4 list-disc text-gray-700">
                         <li>Route Preference: {routePreference}</li>
                         <li>Distance: {prettyMetric(fastestRoute.distance).humanize()}</li>
                         <li>
@@ -1019,9 +1010,11 @@ export default function MapDrawer() {
                         <li>Energy Required: {fastestRoute.totalEnergy?.toFixed(2)} kJ</li>
                       </ul>
                     </div>
+
+                    {/* LEAP Route */}
                     <div>
-                      <div className="font-bold underline">LEAP Route</div>
-                      <ul className="ml-2">
+                      <div className="font-bold underline text-gray-800">LEAP Route</div>
+                      <ul className="ml-4 list-disc text-gray-700">
                         <li>Route Preference: {routePreference}</li>
                         <li>Distance: {prettyMetric(leapRoute.distance).humanize()}</li>
                         <li>Time Taken: {leapRoute.time && prettyMilliseconds(leapRoute.time)}</li>
@@ -1030,9 +1023,10 @@ export default function MapDrawer() {
                       </ul>
                     </div>
 
+                    {/* LCO2 Route */}
                     <div>
-                      <div className="font-bold underline">LCO2 Route</div>
-                      <ul className="ml-2">
+                      <div className="font-bold underline text-gray-800">LCO2 Route</div>
+                      <ul className="ml-4 list-disc text-gray-700">
                         <li>Route Preference: {routePreference}</li>
                         <li>Distance: {prettyMetric(leastCarbonRoute.distance).humanize()}</li>
                         <li>Time Taken: {leastCarbonRoute.time && prettyMilliseconds(leastCarbonRoute.time ?? 1)}</li>
@@ -1041,9 +1035,10 @@ export default function MapDrawer() {
                       </ul>
                     </div>
 
+                    {/* Optimal Route */}
                     <div>
-                      <div className="font-bold underline">Optimal Route</div>
-                      <ul className="ml-2">
+                      <div className="font-bold underline text-gray-800">Optimal Route</div>
+                      <ul className="ml-4 list-disc text-gray-700">
                         <li>Route Preference: {routePreference}</li>
                         <li>Distance: {prettyMetric(balancedRoute.distance).humanize()}</li>
                         <li>
@@ -1057,72 +1052,59 @@ export default function MapDrawer() {
                     </div>
                   </div>
                 ) : (
-                  <ul>
+                  <ul className="list-disc list-inside text-gray-700 space-y-2">
                     <li>Vehicle Profile: {mode}</li>
                     <li>Route Preference: {routePreference}</li>
 
-                    {routePreference == 'shortest' ? (
-                      <li>Distance: {prettyMetric(shortestRoute.distance).humanize()}</li>
-                    ) : routePreference == 'fastest' ? (
-                      <li>Distance: {prettyMetric(fastestRoute.distance).humanize()}</li>
-                    ) : routePreference == 'leap' ? (
-                      <li>Distance: {prettyMetric(leapRoute.distance).humanize()}</li>
-                    ) : routePreference == 'emission' ? (
-                      <li>Distance: {prettyMetric(leastCarbonRoute.distance).humanize()}</li>
-                    ) : routePreference == 'balanced' ? (
-                      <li>Distance: {prettyMetric(balancedRoute.distance).humanize()}</li>
-                    ) : (
-                      <li>Distance: {`No Route Selected`}</li>
+                    {routePreference === 'shortest' && <li>Distance: {prettyMetric(shortestRoute.distance).humanize()}</li>}
+                    {routePreference === 'fastest' && <li>Distance: {prettyMetric(fastestRoute.distance).humanize()}</li>}
+                    {routePreference === 'leap' && <li>Distance: {prettyMetric(leapRoute.distance).humanize()}</li>}
+                    {routePreference === 'emission' && <li>Distance: {prettyMetric(leastCarbonRoute.distance).humanize()}</li>}
+                    {routePreference === 'balanced' && <li>Distance: {prettyMetric(balancedRoute.distance).humanize()}</li>}
+                    {!['shortest', 'fastest', 'leap', 'emission', 'balanced'].includes(routePreference) && (
+                      <li>Distance: No Route Selected</li>
                     )}
-                    {routePreference == 'shortest' ? (
-                      <li>Time Taken: {shortestRoute.time && prettyMilliseconds(shortestRoute.time)}</li>
-                    ) : routePreference == 'fastest' ? (
+
+                    {routePreference === 'shortest' && <li>Time Taken: {shortestRoute.time && prettyMilliseconds(shortestRoute.time)}</li>}
+                    {routePreference === 'fastest' && (
                       <li>Time Taken: {fastestRoute.duration && prettyMilliseconds(fastestRoute.duration * 1000)}</li>
-                    ) : routePreference == 'leap' ? (
+                    )}
+                    {routePreference === 'leap' && (
                       <li>Time Taken: {leapRoute.time && prettyMilliseconds(leapRoute.time ?? leapRoute.duration * 1000)}</li>
-                    ) : routePreference == 'emission' ? (
+                    )}
+                    {routePreference === 'emission' && (
                       <li>
                         Time Taken: {leastCarbonRoute.time && prettyMilliseconds(leastCarbonRoute.time ?? leastCarbonRoute.duration * 1000)}
                       </li>
-                    ) : routePreference == 'balanced' ? (
+                    )}
+                    {routePreference === 'balanced' && (
                       <li>
                         Time Taken:{' '}
                         {(balancedRoute.duration ?? balancedRoute.time) &&
                           prettyMilliseconds(balancedRoute.duration * 1000 ?? balancedRoute.time)}
                       </li>
-                    ) : (
-                      <li>Time Taken: {`No Route Selected`}</li>
+                    )}
+                    {!['shortest', 'fastest', 'leap', 'emission', 'balanced'].includes(routePreference) && (
+                      <li>Time Taken: No Route Selected</li>
                     )}
 
-                    {routePreference == 'leap' ? (
-                      <li>Exposure: {leapRoute.totalExposure?.toFixed(2)} µg/㎥</li>
-                    ) : routePreference == 'balanced' ? (
-                      <li>Exposure: {balancedRoute.totalExposure?.toFixed(2)} µg/㎥</li>
-                    ) : routePreference == 'shortest' ? (
-                      <li>Exposure: {shortestRoute.totalExposure?.toFixed(2)} µg/㎥</li>
-                    ) : routePreference == 'fastest' ? (
-                      <li>Exposure: {fastestRoute.totalExposure?.toFixed(2)} µg/㎥</li>
-                    ) : routePreference == 'emission' ? (
-                      <li>Exposure: {leastCarbonRoute.totalExposure?.toFixed(2)} µg/㎥</li>
-                    ) : (
-                      <li>Exposure: {`No Route Selected`} µg/㎥</li>
+                    {routePreference === 'leap' && <li>Exposure: {leapRoute.totalExposure?.toFixed(2)} µg/㎥</li>}
+                    {routePreference === 'balanced' && <li>Exposure: {balancedRoute.totalExposure?.toFixed(2)} µg/㎥</li>}
+                    {routePreference === 'shortest' && <li>Exposure: {shortestRoute.totalExposure?.toFixed(2)} µg/㎥</li>}
+                    {routePreference === 'fastest' && <li>Exposure: {fastestRoute.totalExposure?.toFixed(2)} µg/㎥</li>}
+                    {routePreference === 'emission' && <li>Exposure: {leastCarbonRoute.totalExposure?.toFixed(2)} µg/㎥</li>}
+                    {!['shortest', 'fastest', 'leap', 'emission', 'balanced'].includes(routePreference) && (
+                      <li>Exposure: No Route Selected µg/㎥</li>
                     )}
 
-                    {routePreference == 'leap' ? (
-                      <li>Energy Required: {leapRoute && leapRoute.totalEnergy?.toFixed(2)} kJ</li>
-                    ) : routePreference == 'balanced' ? (
-                      <li>Energy Required: {balancedRoute && balancedRoute.totalEnergy?.toFixed(2)} kJ</li>
-                    ) : routePreference == 'shortest' ? (
-                      <li>Energy Required: {shortestRoute && shortestRoute.totalEnergy?.toFixed(2)} kJ</li>
-                    ) : routePreference == 'fastest' ? (
-                      <li>Energy Required: {fastestRoute && fastestRoute.totalEnergy?.toFixed(2)} kJ</li>
-                    ) : routePreference == 'emission' ? (
-                      <li>Energy Required: {leastCarbonRoute && leastCarbonRoute.totalEnergy?.toFixed(2)} kJ</li>
-                    ) : (
-                      <li>Energy Required: {`No Route Selected`} </li>
+                    {routePreference === 'leap' && <li>Energy Required: {leapRoute.totalEnergy?.toFixed(2)} kJ</li>}
+                    {routePreference === 'balanced' && <li>Energy Required: {balancedRoute.totalEnergy?.toFixed(2)} kJ</li>}
+                    {routePreference === 'shortest' && <li>Energy Required: {shortestRoute.totalEnergy?.toFixed(2)} kJ</li>}
+                    {routePreference === 'fastest' && <li>Energy Required: {fastestRoute.totalEnergy?.toFixed(2)} kJ</li>}
+                    {routePreference === 'emission' && <li>Energy Required: {leastCarbonRoute.totalEnergy?.toFixed(2)} kJ</li>}
+                    {!['shortest', 'fastest', 'leap', 'emission', 'balanced'].includes(routePreference) && (
+                      <li>Energy Required: No Route Selected</li>
                     )}
-
-                    {routePreference == 'emission' && <li>Energy Required: {leastCarbonRoute.totalEnergy?.toFixed(2)} kJ</li>}
                   </ul>
                 )}
               </div>

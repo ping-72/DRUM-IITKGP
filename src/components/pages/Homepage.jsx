@@ -10,9 +10,9 @@ function Homepage() {
           "url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(79,114,150)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e')",
       }}>
       <div className="layout-container flex h-full grow flex-col">
-        <header className="shadow-lg flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e8edf3] px-10 py-3 fixed w-full">
+        <header className="shadow-lg flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e8edf3] px-10 py-3 fixed w-full trans bg-white">
           <div className="flex items-center gap-4 text-[#0e141b]">
-            <div className="size-4">
+            {/* <div className="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
@@ -25,7 +25,7 @@ function Homepage() {
                   fill="currentColor"
                 />
               </svg>
-            </div>
+            </div> */}
             <h2 className="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em]">DRUM</h2>
           </div>
 
