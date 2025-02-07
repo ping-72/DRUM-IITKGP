@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MapDrawer from './components/MapDrawer';
+// import MapDrawer from './components/MapDrawer';
+import MapDrawer from './components/newFileStr/MapDrawer';
 import Homepage from './components/pages/Homepage';
 
 export default function App() {

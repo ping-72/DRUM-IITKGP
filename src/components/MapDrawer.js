@@ -691,6 +691,7 @@ export default function MapDrawer() {
       {/* Two buttons - 2nd for getting Location */}
       <div className="drawer-content">
         <label htmlFor="my-drawer" className="btn drawer-button btn-secondary btn-sm right-12 top-2  absolute z-40">
+          {isExpanded ? 'Close' : 'Open'}
           {isExpanded ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -738,7 +739,6 @@ export default function MapDrawer() {
                 {...source}
                 value={source.value}
               />
-              TO
               <div>
                 {source.suggestions?.length > 0 && (
                   <div
@@ -766,6 +766,7 @@ export default function MapDrawer() {
                   </div>
                 )}
               </div>
+              TO
               {/* To Where */}
               <input
                 type="text"
