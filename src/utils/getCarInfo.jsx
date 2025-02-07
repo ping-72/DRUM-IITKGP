@@ -1,39 +1,105 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CarData from '../../src/components/newFileStr/carMileageData/mileageData.json';
+import { calculateFuelConsumption } from './flattencarData';
+
+// Extract initial company and model from the JSON
+const carCompanies = Object.keys(CarData);
+const initialCompany = carCompanies[0];
+const initialModels = CarData[initialCompany];
+const initialModel = initialModels[0].model;
 
 const GetCarInformation = ({ onPredict }) => {
   const navigate = useNavigate();
+
+  // Initialize form state using the defined variables.
   const [formData, setFormData] = useState({
-    vehicleModel: '2015',
+    carCompany: initialCompany,
+    carModel: initialModel,
+    productionYear: '2020',
     fuelType: 'Petrol',
-    vehicleType: '',
     distanceDriven: '',
+    averageSpeed: '50',
   });
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    // When the car company changes, update the car model to the first model for that company.
+    if (name === 'carCompany') {
+      const newModels = CarData[value];
+      setFormData((prev) => ({ ...prev, [name]: value, carModel: newModels[0].model }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Utility function: Parse mileage string (e.g., "24.3 km/l" or "10-12 km/l")
+  const parseMileage = (mileageStr) => {
+    if (!mileageStr) return 0;
+    // Use toLowerCase (with a capital "C")
+    const cleaned = mileageStr.toLowerCase().replace('km/l', '').trim();
+    if (cleaned.includes('-')) {
+      const parts = cleaned.split('-').map((p) => parseFloat(p));
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        return (parts[0] + parts[1]) / 2;
+      }
+    }
+    const value = parseFloat(cleaned);
+    return isNaN(value) ? 0 : value;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const emissionData = {
+
+    // Find the selected car's data in the JSON.
+    const selectedCompanyData = CarData[formData.carCompany];
+    const carInfo = selectedCompanyData.find((car) => car.model === formData.carModel);
+    if (!carInfo) {
+      alert('Invalid Car Model');
+      return;
+    }
+
+    // Extract the baseline mileage from the car info.
+    const baselineMileage = parseMileage(carInfo.averageMileage);
+
+    // Parse numeric inputs
+    const productionYear = parseInt(formData.productionYear, 10);
+    const distanceDriven = parseInt(formData.distanceDriven, 10);
+    const averageSpeed = parseInt(formData.averageSpeed, 10);
+
+    // Calculate fuel consumption using the imported function.
+    const { effectiveMileage, fuelConsumption, message } = calculateFuelConsumption({
+      baselineMileage,
+      productionYear,
+      fuelType: formData.fuelType,
+      distanceDriven,
+      averageSpeed,
+    });
+
+    // Pass the results to the parent (if provided)
+    onPredict?.({
       ...formData,
-      distanceDriven: parseInt(formData.distanceDriven, 10),
-    };
-    onPredict?.(emissionData);
+      carInfo,
+      baselineMileage,
+      effectiveMileage,
+      fuelConsumption,
+      ...(message ? { message } : {}),
+    });
   };
 
-  // Calculate progress values based on form completion
-  const getProgressValue = () => {
+  // Compute a simple form progress value.
+  const getProgressiveValue = () => {
     const filled = Object.values(formData).filter(Boolean).length;
     return (filled / Object.keys(formData).length) * 100;
   };
 
-  const progressValue = getProgressValue();
+  // Use a consistent variable name for progress value.
+  const progressValue = getProgressiveValue();
+
+  // Get the list of models for the selected car company.
+  const modelsForCompany = CarData[formData.carCompany] || [];
 
   return (
     <div className="px-4 md:px-40 flex flex-1 justify-center py-5">
@@ -42,29 +108,63 @@ const GetCarInformation = ({ onPredict }) => {
           <h1 className="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight">Car Journey Analysis</h1>
         </div>
 
-        {/* Vehicle Model (Year) */}
+        {/* Car Company Dropdown */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <select
+              name="carCompany"
+              value={formData.carCompany}
+              onChange={handleInputChange}
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
+              {carCompanies.map((company) => (
+                <option key={company} value={company}>
+                  {company}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {/* Car Model Dropdown */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <select
+              name="carModel"
+              value={formData.carModel}
+              onChange={handleInputChange}
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
+              {modelsForCompany.map((modelData) => (
+                <option key={modelData.model} value={modelData.model}>
+                  {modelData.model} ({modelData.carType})
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {/* Production Year Input */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
             <input
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe6] bg-[#f8fafb] focus:border-[#d0dbe6] h-14 placeholder:text-[#4f7296] p-[15px] text-base font-normal leading-normal"
               type="number"
-              name="vehicleModel"
-              value={formData.vehicleModel}
+              name="productionYear"
+              value={formData.productionYear}
               onChange={handleInputChange}
               required
-              placeholder="Vehicle Model (Year)"
+              placeholder="Production Year (e.g., 2020)"
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
             />
           </label>
         </div>
 
-        {/* Fuel Type */}
+        {/* Fuel Type Dropdown */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
             <select
               name="fuelType"
               value={formData.fuelType}
               onChange={handleInputChange}
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe6] bg-[#f8fafb] focus:border-[#d0dbe6] h-14 placeholder:text-[#4f7296] p-[15px] text-base font-normal leading-normal">
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
               <option value="Petrol">Petrol</option>
               <option value="Diesel">Diesel</option>
               <option value="EV">EV</option>
@@ -72,58 +172,40 @@ const GetCarInformation = ({ onPredict }) => {
           </label>
         </div>
 
-        {/* Vehicle Type */}
+        {/* Total Distance Driven Input */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
             <input
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe6] bg-[#f8fafb] focus:border-[#d0dbe6] h-14 placeholder:text-[#4f7296] p-[15px] text-base font-normal leading-normal"
-              type="text"
-              name="vehicleType"
-              value={formData.vehicleType}
-              onChange={handleInputChange}
-              required
-              placeholder="e.g., Sedan, SUV"
-            />
-          </label>
-        </div>
-
-        {/* Total Distance Driven (KM) */}
-        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label className="flex flex-col min-w-40 flex-1">
-            <input
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe6] bg-[#f8fafb] focus:border-[#d0dbe6] h-14 placeholder:text-[#4f7296] p-[15px] text-base font-normal leading-normal"
               type="number"
               name="distanceDriven"
               value={formData.distanceDriven}
               onChange={handleInputChange}
               required
               placeholder="Total Distance Driven (KM)"
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
             />
           </label>
         </div>
 
-        {/* Progress Indicators */}
-        <h3 className="text-[#0e141b] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Important Features</h3>
+        {/* Average Speed Input */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <input
+              type="number"
+              name="averageSpeed"
+              value={formData.averageSpeed}
+              onChange={handleInputChange}
+              required
+              placeholder="Average Speed (km/h)"
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
+            />
+          </label>
+        </div>
 
-        {['Time Required for Completion', 'Total Distance', 'Total Cost (Fuel Consumption)', 'AQI Exposure Level'].map((label) => (
-          <div key={label} className="@container">
-            <div className="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
-              <div className="flex w-full shrink-[3] items-center justify-between">
-                <p className="text-[#0e141b] text-base font-medium leading-normal">{label}</p>
-                <p className="text-[#0e141b] text-sm font-normal leading-normal @[480px]:hidden">{progressValue.toFixed(0)}%</p>
-              </div>
-              <div className="flex h-4 w-full items-center gap-4">
-                <div className="flex h-1 flex-1 rounded-sm bg-[#d0dbe6]">
-                  <div className="h-full rounded-sm bg-[#1972d2]" style={{ width: `${progressValue}%` }} />
-                  <div className="relative">
-                    <div className="absolute -top-1.5 size-4 rounded-full bg-[#1972d2]" style={{ left: `${progressValue}%` }} />
-                  </div>
-                </div>
-                <p className="text-[#0e141b] text-sm font-normal leading-normal hidden @[480px]:block">{progressValue.toFixed(0)}%</p>
-              </div>
-            </div>
-          </div>
-        ))}
+        {/* Progress Indicator (Optional) */}
+        <div className="px-4 py-3">
+          <p className="text-[#0e141b] text-sm">Form Completion: {progressValue.toFixed(0)}%</p>
+        </div>
 
         {/* Submit and Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-6">
