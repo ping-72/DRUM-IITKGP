@@ -46,12 +46,7 @@ const GetCarInformation = ({ onPredict }) => {
 
   return (
     <div className="px-4 md:px-40 flex flex-1 justify-center py-5">
-      <form
-        onSubmit={() => {
-          e.preventDefault();
-          navigate('/routes');
-        }}
-        className="flex flex-col w-full max-w-[512px] py-5">
+      <form className="flex flex-col w-full max-w-[512px] py-5">
         <div className="flex flex-wrap justify-between gap-3 p-4">
           <h1 className="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight">Car Journey Analysis</h1>
         </div>
@@ -135,24 +130,14 @@ const GetCarInformation = ({ onPredict }) => {
           </label>
         </div>
 
-        {/* Average Speed Input */}
-        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <label className="flex flex-col min-w-40 flex-1">
-            <input
-              type="number"
-              name="averageSpeed"
-              value={carData.averageSpeed}
-              onChange={handleCarDataChange}
-              required
-              placeholder="Average Speed (km/h)"
-              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
-            />
-          </label>
-        </div>
+        {/* The user-preference for custom routing */}
 
         {/* Submit and Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-6">
-          <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+          <button
+            type="submit"
+            className="py-2 px-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+            onClick={() => navigate('/routes')}>
             Go to Routes
           </button>
         </div>
