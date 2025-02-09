@@ -1,22 +1,17 @@
-// src/components/MapDrawer.jsx
 import { useState, useEffect } from 'react';
 import useInput from '../useInput.js';
 import Instruction from '../Instruction.js';
+import { CarProvider, useCar } from './contexts/Carcontext.js';
 import GetCarInformation from './CarInfo/getCarInfo.jsx';
 import { setupMap, addMarkerToMap } from './utils/mapUtils.js';
-// import GetCarInformation from '../utils/getCarInfo.jsx';
-
-// import useInput from '../hooks/useInput.js';
 import prettyMilliseconds from 'pretty-ms';
 import prettyMetric from 'pretty-metric';
-// import Instruction from './Instruction.js';
-// (Other imported components remain as before)
 
-// import { setupMap, addMarkerToMap } from '../utils/mapUtils.js';
+// import Instruction from './Instruction.js';
+
 import { getAllRoutes, getRoutes } from './controllers/routeHandlers.js';
 
 export default function MapDrawer() {
-  // Drawer state
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showColorInfo, setShowColorInfo] = useState(true);
@@ -37,6 +32,8 @@ export default function MapDrawer() {
   const [leapRoute, setLeapRoute] = useState({});
   const [balancedRoute, setBalancedRoute] = useState({});
   const [leastCarbonRoute, setLeastCarbonRoute] = useState({});
+  const [departureTime, setDepartureTime] = useState('');
+  const [openDepartTime, setOpenDepartTime] = useState(false);
 
   // On mount, set up the map at a default position
   let position = [0, 0];
@@ -49,11 +46,12 @@ export default function MapDrawer() {
   }, [mode, routePreference]);
 
   return (
-    <div className="drawer">
+    <div className="drawer overflow-y-auto">
       {/* Toggle for the drawer */}
       <input id="my-drawer" type="checkbox" className="drawer-toggle" onClick={() => setIsExpanded(!isExpanded)} />
 
       <div className="drawer-content">
+        {/* label for the drawer */}
         <label htmlFor="my-drawer" className="btn drawer-button btn-secondary btn-sm right-12 top-2 absolute z-40">
           {isExpanded ? 'Close' : 'Open'}
           {isExpanded ? (
@@ -93,86 +91,92 @@ export default function MapDrawer() {
           <h1 className="text-lg font-semibold title-font text-center border-b-2 pb-2 mx-auto mb-4 text-gray-800">DRUM - IIT KGP</h1>
           <form>
             <div className="flex flex-col space-y-4 items-center">
+              {/* --------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
               {/* Source Input */}
-              <input
-                type="text"
-                placeholder="Delhi"
-                className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
-                required
-                {...source}
-                value={source.value}
-              />
-              <div>
-                {source.suggestions?.length > 0 && (
-                  <div
-                    name="suggestion-wrapper"
-                    className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
-                    {source.suggestions.map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
-                        onClick={() => {
-                          source.setValue(suggestion.text);
-                          source.setPosition(suggestion.center);
-                          source.setSuggestions([]);
-                          setupMap({
-                            position: suggestion.center,
-                            placeName: suggestion.text,
-                            locationType: 'source',
-                            mode,
-                            routePreference,
-                          });
-                        }}>
-                        {suggestion.place_name}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <>
+                <input
+                  type="text"
+                  placeholder="Delhi"
+                  className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
+                  required
+                  {...source}
+                  value={source.value}
+                />
+                <div>
+                  {source.suggestions?.length > 0 && (
+                    <div
+                      name="suggestion-wrapper"
+                      className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
+                      {source.suggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
+                          onClick={() => {
+                            source.setValue(suggestion.text);
+                            source.setPosition(suggestion.center);
+                            source.setSuggestions([]);
+                            setupMap({
+                              position: suggestion.center,
+                              placeName: suggestion.text,
+                              locationType: 'source',
+                              mode,
+                              routePreference,
+                            });
+                          }}>
+                          {suggestion.place_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
               TO
               {/* Destination Input */}
-              <input
-                type="text"
-                placeholder="Sangam Vihar"
-                className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
-                required
-                {...destination}
-                value={destination.value}
-              />
-              <div>
-                {destination.suggestions?.length > 0 && (
-                  <div
-                    name="suggestion-wrapper"
-                    className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
-                    {destination.suggestions.map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
-                        onClick={() => {
-                          destination.setValue(suggestion.text);
-                          destination.setPosition(suggestion.center);
-                          destination.setSuggestions([]);
-                          setupMap({
-                            position: suggestion.center,
-                            placeName: suggestion.text,
-                            locationType: 'destination',
-                            mode,
-                            routePreference,
-                          });
-                          addMarkerToMap({
-                            position: source.position,
-                            placeName: source.value,
-                            locationType: 'source',
-                            mode,
-                            routePreference,
-                          });
-                        }}>
-                        {suggestion.place_name}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <>
+                <input
+                  type="text"
+                  placeholder="Sangam Vihar"
+                  className="input input-sm input-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
+                  required
+                  {...destination}
+                  value={destination.value}
+                />
+                <div>
+                  {destination.suggestions?.length > 0 && (
+                    <div
+                      name="suggestion-wrapper"
+                      className="bg-white text-gray-800 absolute right-0 w-11/12 border border-gray-300 rounded-md shadow-lg z-50">
+                      {destination.suggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="hover:bg-gray-200 cursor-pointer max-w-sm border-b border-gray-200 p-2"
+                          onClick={() => {
+                            destination.setValue(suggestion.text);
+                            destination.setPosition(suggestion.center);
+                            destination.setSuggestions([]);
+                            setupMap({
+                              position: suggestion.center,
+                              placeName: suggestion.text,
+                              locationType: 'destination',
+                              mode,
+                              routePreference,
+                            });
+                            addMarkerToMap({
+                              position: source.position,
+                              placeName: source.value,
+                              locationType: 'source',
+                              mode,
+                              routePreference,
+                            });
+                          }}>
+                          {suggestion.place_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+              {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
               {/* Mode Select */}
               <select
                 className="select select-sm select-bordered bg-gray-100 text-gray-800 w-full max-w-xs"
@@ -189,8 +193,10 @@ export default function MapDrawer() {
                 <option value="bike">Cycling</option>
                 <option value="foot">Walking</option> */}
               </select>
+              {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
               {/* Important features (and possibly car info) */}
-              {/* <div className="text-red-500 text-sm font-mono">Important Features*</div> */}
+              {/* Import Car Info */}
+              {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
               <div className="flex flex-row justify-evenly items-center w-full max-w-xs">
                 <select
                   className="select select-sm select-bordered bg-gray-100 text-gray-800 w-full"
@@ -250,6 +256,35 @@ export default function MapDrawer() {
                   </div>
                 </div>
               </div>
+              {/* ------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+              <br />
+              <>
+                <div className="flex flex-col justify-evenly items-center w-full max-w-xs border rounded-md p-1 border-gray-300">
+                  <button onClick={() => setOpenDepartTime(!openDepartTime)}>
+                    {!openDepartTime ? 'Advanced Settings >' : 'Advanced Settings <'}
+                    <br />
+                  </button>
+                  {openDepartTime && (
+                    <div className="flex flex-col justify-evenly items-center w-full max-w-xs mt-4">
+                      <label className="text-gray-700 text-sm">When will you be leaving?</label>
+                      <select
+                        className="select select-sm select-bordered bg-gray-100 text-gray-800 w-full m-1"
+                        value={departureTime}
+                        onChange={(e) => {
+                          setDepartureTime(e.target.value);
+                        }}>
+                        <option value="now">Now</option>
+                        <option value="+1">+1 hour</option>
+                        <option value="+2">+2 hours</option>
+                        <option value="+3">+3 hours</option>
+                        <option value="+4">+4 hours</option>
+                        <option value="+5">+5 hours</option>
+                        <option value="+6">+6 hours</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </>
               <button
                 className="btn btn-wide bg-blue-600 text-white hover:bg-blue-700"
                 onClick={(e) => {

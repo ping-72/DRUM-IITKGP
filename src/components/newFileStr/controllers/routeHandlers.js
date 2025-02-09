@@ -10,7 +10,7 @@ export async function getAllRoutes({
   source,
   destination,
   mode,
-  routePreference,
+  routePreference, // fastest, shortest, leap, balanced, leastCarbon
   setFastestRoute,
   setShortestRoute,
   setLeapRoute,
@@ -160,6 +160,10 @@ export async function getRoutes({
   setLeastCarbonRoute,
   setIsLoading,
 }) {
+  if (source.value === '' || destination.value === '') {
+    console.log('Please select a source and destination.');
+    return;
+  }
   if (source.value !== '' && destination.value !== '') {
     console.log('Running getRoutes with mode:', mode, 'and routePreference:', routePreference);
     try {
@@ -168,22 +172,33 @@ export async function getRoutes({
 
       // Adjust the mode if needed based on the selected route preference.
       function adjustModeRoutePreference(temp_routePreference) {
-        if (temp_routePreference === 'leap' && temp_mode === 'driving-traffic') {
-          temp_mode = 'car'; // ignore traffic for LEAP path.
-        } else if (temp_routePreference === 'fastest' && temp_mode === 'car') {
-          temp_mode = 'driving-traffic';
-        } else if (temp_routePreference === 'emission' && temp_mode === 'driving-traffic') {
-          temp_mode = 'car';
+        switch (temp_routePreference) {
+          case 'leap':
+            if (temp_mode === 'driving-traffic') {
+              temp_mode = 'car'; // ignore traffic for LEAP path.
+            }
+            break;
+          case 'fastest':
+            if (temp_mode === 'car') {
+              temp_mode = 'driving-traffic';
+            }
+            break;
+          case 'emission':
+            if (temp_mode === 'driving-traffic') {
+              temp_mode = 'car';
+            }
+            break;
         }
-        // Additional adjustments can be added here.
       }
       adjustModeRoutePreference(temp_routePreference);
 
       let routes;
       if (temp_mode === 'driving-traffic') {
         routes = await getMapboxRoutes(source, destination);
+        console.log('Getting routes from Mapbox API, routes: ', routes);
       } else {
         routes = await getGraphhopperRoutes(temp_mode, source, destination);
+        console.log('Getting routes from Graphhopper API, routes: ', routes);
       }
 
       let geojson;
@@ -192,157 +207,146 @@ export async function getRoutes({
       let shortestRouteTime;
       let shortestRouteDistance;
 
-      switch (temp_routePreference) {
-        case 'shortest': {
-          console.log('Shortest Path...');
-          ({ geojson, routes } = await getShortestRoute(routes, temp_mode));
-          setDistance(routes[0].distance);
-          if (temp_mode.includes('traffic')) {
-            setTime(routes[0].time);
-            setInstructions(routes[0].legs[0].steps);
-          } else {
-            setTime(routes[0].time);
-            setInstructions(routes[0].instructions);
-          }
-          // Remove any previous route layers.
-          window.$map.getStyle().layers.forEach((layer) => {
-            if (layer.id.includes('-route')) {
-              window.$map.removeLayer(layer.id);
-              window.$map.removeSource(layer.id);
-            }
-          });
-          setExposure(routes[0].totalExposure);
-          routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-          if (window.$map.getSource(routeId)) {
-            window.$map.getSource(routeId).setData(geojson);
-            setShortestRoute(routes[0]);
-            setIsLoading(false);
-          } else {
-            setShortestRoute(routes[0]);
-            displayRoute(geojson, source, destination, routeId, 'shortest');
-            setIsLoading(false);
-          }
-          break;
-        }
-        case 'fastest': {
-          console.log('Fastest Path...');
-          const res = await getFastestRoute(routes, temp_mode);
-          geojson = res.geojson;
-          routes = res.routes;
-          setDistance(routes[0].distance);
-          if (temp_mode.includes('traffic')) {
-            setTime(routes[0].duration);
-            setInstructions(routes[0].legs[0].steps);
-          } else {
-            setTime(routes[0].time);
-            setInstructions(routes[0].instructions);
-          }
-          setExposure(routes[0].totalExposure);
-          window.$map.getStyle().layers.forEach((layer) => {
-            if (layer.id.includes('-route')) {
-              window.$map.removeLayer(layer.id);
-              window.$map.removeSource(layer.id);
-            }
-          });
-          routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-          if (window.$map.getSource(routeId)) {
-            window.$map.getSource(routeId).setData(geojson);
-            setFastestRoute(routes[0]);
-            setIsLoading(false);
-          } else {
-            setFastestRoute(routes[0]);
-            displayRoute(geojson, source, destination, routeId, 'fastest');
-            setIsLoading(false);
-          }
-          break;
-        }
-        case 'leap': {
-          console.log('LEAP Path...');
-          ({ geojson, routes } = await getLeapRoute(routes, temp_mode));
-          setDistance(routes[0].distance);
-          temp_routes.sort((a, b) => a.distance - b.distance);
-          shortestRouteTime = temp_routes[0].time;
-          shortestRouteDistance = temp_routes[0].distance;
-          routes[0].time = (routes[0].distance / shortestRouteDistance) * shortestRouteTime;
+      if (temp_routePreference === 'fastest') {
+        console.log('Fastest Path...');
+        const res = await getFastestRoute(routes, temp_mode);
+        geojson = res.geojson;
+        routes = res.routes;
+        setDistance(routes[0].distance);
+        if (temp_mode.includes('traffic')) {
+          setTime(routes[0].duration);
+          setInstructions(routes[0].legs[0].steps);
+        } else {
           setTime(routes[0].time);
           setInstructions(routes[0].instructions);
-          window.$map.getStyle().layers.forEach((layer) => {
-            if (layer.id.includes('-route')) {
-              window.$map.removeLayer(layer.id);
-              window.$map.removeSource(layer.id);
-            }
-          });
-          setExposure(routes[0].totalExposure);
-          routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-          if (window.$map.getSource(routeId)) {
-            window.$map.getSource(routeId).setData(geojson);
-            setLeapRoute(routes[0]);
-            setIsLoading(false);
-          } else {
-            displayRoute(geojson, source, destination, routeId, 'leap');
-            setLeapRoute(routes[0]);
-            setIsLoading(false);
-          }
-          break;
         }
-        case 'balanced': {
-          console.log('Balanced Path...');
-          ({ geojson, routes } = await getBalancedRoute(routes, mode));
-          setDistance(routes[0].distance);
-          if (temp_mode.includes('traffic')) {
-            setTime(routes[0].duration);
-            setInstructions(routes[0].legs[0].steps);
-          } else {
-            setTime(routes[0].time);
-            setInstructions(routes[0].instructions);
+        setExposure(routes[0].totalExposure);
+        window.$map.getStyle().layers.forEach((layer) => {
+          if (layer.id.includes('-route')) {
+            window.$map.removeLayer(layer.id);
+            window.$map.removeSource(layer.id);
           }
-          setExposure(routes[0].totalExposure);
-          window.$map.getStyle().layers.forEach((layer) => {
-            if (layer.id.includes('-route')) {
-              window.$map.removeLayer(layer.id);
-              window.$map.removeSource(layer.id);
-            }
-          });
-          routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-          if (window.$map.getSource(routeId)) {
-            window.$map.getSource(routeId).setData(geojson);
-            setBalancedRoute(routes[0]);
-            setIsLoading(false);
-          } else {
-            setBalancedRoute(routes[0]);
-            displayRoute(geojson, source, destination, routeId, 'balanced');
-            setIsLoading(false);
-          }
-          break;
+        });
+        routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
+        if (window.$map.getSource(routeId)) {
+          window.$map.getSource(routeId).setData(geojson);
+          setFastestRoute(routes[0]);
+          setIsLoading(false);
+        } else {
+          setFastestRoute(routes[0]);
+          displayRoute(geojson, source, destination, routeId, 'fastest');
+          setIsLoading(false);
         }
-        case 'emission': {
-          console.log('Emission Path...');
-          ({ geojson, routes } = await getLeastCarbonRoute(source, destination, temp_mode));
-          setDistance(routes[0].distance);
-          temp_routes.sort((a, b) => a.distance - b.distance);
-          shortestRouteTime = temp_routes[0].time;
-          shortestRouteDistance = temp_routes[0].distance;
-          routes[0].time = (routes[0].distance / shortestRouteDistance) * shortestRouteTime;
+      } else if (temp_routePreference === 'shortest') {
+        console.log('Shortest Path...');
+        ({ geojson, routes } = await getShortestRoute(routes, temp_mode));
+        setDistance(routes[0].distance);
+        if (temp_mode.includes('traffic')) {
+          setTime(routes[0].time);
+          setInstructions(routes[0].legs[0].steps);
+        } else {
           setTime(routes[0].time);
           setInstructions(routes[0].instructions);
-          setExposure(routes[0].totalExposure);
-          window.$map.getStyle().layers.forEach((layer) => {
-            if (layer.id.includes('-route')) {
-              window.$map.removeLayer(layer.id);
-              window.$map.removeSource(layer.id);
-            }
-          });
-          routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-          if (window.$map.getSource(routeId)) {
-            window.$map.getSource(routeId).setData(geojson);
-            setLeastCarbonRoute(routes[0]);
-            setIsLoading(false);
-          } else {
-            displayRoute(geojson, source, destination, routeId, 'emission');
-            setLeastCarbonRoute(routes[0]);
-            setIsLoading(false);
+        }
+        // Remove any previous route layers.
+        window.$map.getStyle().layers.forEach((layer) => {
+          if (layer.id.includes('-route')) {
+            window.$map.removeLayer(layer.id);
+            window.$map.removeSource(layer.id);
           }
-          break;
+        });
+        setExposure(routes[0].totalExposure);
+        routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
+        if (window.$map.getSource(routeId)) {
+          window.$map.getSource(routeId).setData(geojson);
+          setShortestRoute(routes[0]);
+          setIsLoading(false);
+        } else {
+          setShortestRoute(routes[0]);
+          displayRoute(geojson, source, destination, routeId, 'shortest');
+          setIsLoading(false);
+        }
+      } else if (temp_routePreference === 'leap') {
+        console.log('LEAP Path...');
+        ({ geojson, routes } = await getLeapRoute(routes, temp_mode));
+        setDistance(routes[0].distance);
+        temp_routes.sort((a, b) => a.distance - b.distance);
+        shortestRouteTime = temp_routes[0].time;
+        shortestRouteDistance = temp_routes[0].distance;
+        routes[0].time = (routes[0].distance / shortestRouteDistance) * shortestRouteTime;
+        setTime(routes[0].time);
+        setInstructions(routes[0].instructions);
+        window.$map.getStyle().layers.forEach((layer) => {
+          if (layer.id.includes('-route')) {
+            window.$map.removeLayer(layer.id);
+            window.$map.removeSource(layer.id);
+          }
+        });
+        setExposure(routes[0].totalExposure);
+        routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
+        if (window.$map.getSource(routeId)) {
+          window.$map.getSource(routeId).setData(geojson);
+          setLeapRoute(routes[0]);
+          setIsLoading(false);
+        } else {
+          displayRoute(geojson, source, destination, routeId, 'leap');
+          setLeapRoute(routes[0]);
+          setIsLoading(false);
+        }
+      } else if (temp_routePreference === 'emission') {
+        console.log('Emission Path...');
+        ({ geojson, routes } = await getLeastCarbonRoute(source, destination, temp_mode));
+        setDistance(routes[0].distance);
+        temp_routes.sort((a, b) => a.distance - b.distance);
+        shortestRouteTime = temp_routes[0].time;
+        shortestRouteDistance = temp_routes[0].distance;
+        routes[0].time = (routes[0].distance / shortestRouteDistance) * shortestRouteTime;
+        setTime(routes[0].time);
+        setInstructions(routes[0].instructions);
+        setExposure(routes[0].totalExposure);
+        window.$map.getStyle().layers.forEach((layer) => {
+          if (layer.id.includes('-route')) {
+            window.$map.removeLayer(layer.id);
+            window.$map.removeSource(layer.id);
+          }
+        });
+        routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
+        if (window.$map.getSource(routeId)) {
+          window.$map.getSource(routeId).setData(geojson);
+          setLeastCarbonRoute(routes[0]);
+          setIsLoading(false);
+        } else {
+          displayRoute(geojson, source, destination, routeId, 'emission');
+          setLeastCarbonRoute(routes[0]);
+          setIsLoading(false);
+        }
+      } else if (temp_routePreference === 'balanced') {
+        console.log('Balanced Path...');
+        ({ geojson, routes } = await getBalancedRoute(routes, mode));
+        setDistance(routes[0].distance);
+        if (temp_mode.includes('traffic')) {
+          setTime(routes[0].duration);
+          setInstructions(routes[0].legs[0].steps);
+        } else {
+          setTime(routes[0].time);
+          setInstructions(routes[0].instructions);
+        }
+        setExposure(routes[0].totalExposure);
+        window.$map.getStyle().layers.forEach((layer) => {
+          if (layer.id.includes('-route')) {
+            window.$map.removeLayer(layer.id);
+            window.$map.removeSource(layer.id);
+          }
+        });
+        routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
+        if (window.$map.getSource(routeId)) {
+          window.$map.getSource(routeId).setData(geojson);
+          setBalancedRoute(routes[0]);
+          setIsLoading(false);
+        } else {
+          setBalancedRoute(routes[0]);
+          displayRoute(geojson, source, destination, routeId, 'balanced');
+          setIsLoading(false);
         }
       }
     } catch (e) {
