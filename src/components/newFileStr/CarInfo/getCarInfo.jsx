@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CarData from '../../src/components/newFileStr/carMileageData/mileageData.json';
-import { calculateFuelConsumption } from './flattencarData';
+import CarData from '../carMileageData/mileageData.json';
+import { calculateFuelConsumption } from '../../../utils/flattencarData';
 
 // Extract initial company and model from the JSON
 const carCompanies = Object.keys(CarData);

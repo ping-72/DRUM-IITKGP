@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import useInput from '../useInput.js';
 import Instruction from '../Instruction.js';
-import GetCarInformation from '../../utils/getCarInfo.jsx';
+import GetCarInformation from './CarInfo/getCarInfo.jsx';
 import { setupMap, addMarkerToMap } from './utils/mapUtils.js';
 // import GetCarInformation from '../utils/getCarInfo.jsx';
 

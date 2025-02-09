@@ -1,5 +1,5 @@
 import React from 'react';
-import GetCarInformation from '../../utils/getCarInfo';
+import GetCarInformation from './CarInfo/getCarInfo';
 
 function Homepage() {
   return (
@@ -11,7 +11,7 @@ function Homepage() {
       }}>
       <div className="layout-container flex h-full grow flex-col">
         <header className="shadow-lg flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e8edf3] px-10 py-3 fixed w-full trans bg-white">
-          <div className="flex items-center gap-4 text-[#0e141b]">
+          <div className="flex items-center gap-4 text-[#3e4855]">
             {/* <div className="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
