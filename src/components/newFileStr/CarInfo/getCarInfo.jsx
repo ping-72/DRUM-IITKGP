@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Draggable } from 'react-drag-reorder';
 import CarData from '../carMileageData/mileageData.json';
-import { calculateFuelConsumption } from '../../../utils/flattencarData';
 import { CarProvider, useCar } from '../contexts/Carcontext';
 
 const carCompanies = Object.keys(CarData);
@@ -9,9 +9,19 @@ const initialCompany = carCompanies[0];
 const initialModels = CarData[initialCompany];
 const initialModel = initialModels[0].model;
 
+// Custom reorder helper
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+};
+
 const GetCarInformation = ({ onPredict }) => {
   // Access carData and updateCarData from the CarProvider
   const { carData, updateCarData } = useCar();
+
+  // Set default values if not already present in the context
   carData.company = carData.company || initialCompany;
   carData.model = carData.model || initialModel;
   carData.productionYear = carData.productionYear || '2020';
@@ -20,25 +30,23 @@ const GetCarInformation = ({ onPredict }) => {
   carData.averageSpeed = carData.averageSpeed || '50';
   carData.mileage = carData.mileage || '24.3 km/l';
 
+  const navigate = useNavigate();
+
   const handleCarDataChange = (e) => {
     const { name, value } = e.target;
     updateCarData({ [name]: value });
   };
-  const navigate = useNavigate();
 
-  const parseMileage = (mileageStr) => {
-    if (!mileageStr) return 0;
-    const cleaned = mileageStr.toLowerCase().replace('km/l', '').trim();
-    if (cleaned.includes('-')) {
-      const parts = cleaned.split('-').map((p) => parseFloat(p));
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-        return (parts[0] + parts[1]) / 2;
-      }
-    }
-    const value = parseFloat(cleaned);
-    return isNaN(value) ? 0 : value;
+  // Local state for route preferences
+  const [preferences, setPreferences] = useState(['Shortest', 'Faster', 'Least Exposure', 'Least Emission']);
+
+  // Update the preferences order when the drag position changes
+  const handlePosChange = (currentPos, newPos) => {
+    const newOrder = reorder(preferences, currentPos, newPos);
+    setPreferences(newOrder);
   };
 
+  // Get the models for the currently selected company.
   let modelsForCompany = CarData[carData.company] || [];
   useEffect(() => {
     modelsForCompany = CarData[carData.company] || [];
@@ -130,7 +138,29 @@ const GetCarInformation = ({ onPredict }) => {
           </label>
         </div>
 
-        {/* The user-preference for custom routing */}
+        {/* User-preference for custom routing (drag and reorder options) */}
+        <div className="flex flex-col max-w-[480px] gap-4 px-4 py-3">
+          <h2 className="text-xl font-bold">Route Preferences</h2>
+          <Draggable onPosChange={handlePosChange}>
+            {preferences.map((preference, index) => (
+              <div key={index} className="flex-item items-center gap-2 border border-black rounded p-2">
+                <span className="flex justify-between">
+                  <span onClick={() => handleUp(preference)} className="bg-gray-300 px-2 py-1 rounded-sm hover:bg-gray-400">
+                    <span role="img" aria-label="up">
+                      {' '}
+                    </span>
+                  </span>
+                  {preference}
+                  <span onClick={() => handleDown(preference)} className="bg-gray-300 px-2 py-1 rounded-sm hover:bg-gray-400">
+                    <span role="img" aria-label="down">
+                      {' '}
+                    </span>
+                  </span>
+                </span>
+              </div>
+            ))}
+          </Draggable>
+        </div>
 
         {/* Submit and Navigation Buttons */}
         <div className="flex justify-center gap-4 mt-6">
