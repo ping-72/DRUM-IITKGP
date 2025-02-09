@@ -1,272 +1,4 @@
 {
-  "Maruti Suzuki": [
-    {
-      "model": "Alto K10",
-      "averageMileage": "24.3 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Celerio",
-      "averageMileage": "26.68 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Wagon R",
-      "averageMileage": "23.56 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Swift",
-      "averageMileage": "24.8 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Dzire",
-      "averageMileage": "24.79 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Baleno",
-      "averageMileage": "22.94 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Grand Vitara",
-      "averageMileage": "27.97 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Tata Motors": [
-    {
-      "model": "Tiago",
-      "averageMileage": "23.84 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Tigor",
-      "averageMileage": "20.3 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Altroz",
-      "averageMileage": "25.11 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Nexon",
-      "averageMileage": "24.08 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Harrier",
-      "averageMileage": "16.35 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Kia": [
-    {
-      "model": "Seltos",
-      "averageMileage": "20.8 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Sonet",
-      "averageMileage": "24.1 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Carens",
-      "averageMileage": "21.3 km/l",
-      "carType": "MPV"
-    }
-  ],
-  "Toyota": [
-    {
-      "model": "Urban Cruiser Hyryder",
-      "averageMileage": "27.97 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Innova Crysta",
-      "averageMileage": "15.6 km/l",
-      "carType": "MPV"
-    },
-    {
-      "model": "Fortuner",
-      "averageMileage": "10-12 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Hyundai": [
-    {
-      "model": "Grand i10 Nios",
-      "averageMileage": "20.7 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "i20",
-      "averageMileage": "20.35 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Verna",
-      "averageMileage": "21.3 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Creta",
-      "averageMileage": "21.8 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Venue",
-      "averageMileage": "24.1 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Mahindra": [
-    {
-      "model": "XUV300",
-      "averageMileage": "20 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Scorpio N",
-      "averageMileage": "15 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Thar",
-      "averageMileage": "15.2 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Bolero",
-      "averageMileage": "16.7 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Honda": [
-    {
-      "model": "City",
-      "averageMileage": "17.8 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Amaze",
-      "averageMileage": "24.7 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Jazz",
-      "averageMileage": "16.6 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "WR-V",
-      "averageMileage": "23.7 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "MG (Morris Garages)": [
-    {
-      "model": "Hector",
-      "averageMileage": "17.41 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Astor",
-      "averageMileage": "15.43 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Gloster",
-      "averageMileage": "14.5 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Skoda": [
-    {
-      "model": "Slavia",
-      "averageMileage": "19.47 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Kushaq",
-      "averageMileage": "17.88 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Octavia",
-      "averageMileage": "15.81 km/l",
-      "carType": "Sedan"
-    }
-  ],
-  "Jeep": [
-    {
-      "model": "Compass",
-      "averageMileage": "17.1 km/l",
-      "carType": "SUV"
-    },
-    {
-      "model": "Meridian",
-      "averageMileage": "15.7 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Renault": [
-    {
-      "model": "Kwid",
-      "averageMileage": "22 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Triber",
-      "averageMileage": "20 km/l",
-      "carType": "MPV"
-    },
-    {
-      "model": "Kiger",
-      "averageMileage": "20 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Nissan": [
-    {
-      "model": "Magnite",
-      "averageMileage": "20 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Volkswagen": [
-    {
-      "model": "Polo",
-      "averageMileage": "18.24 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "Vento",
-      "averageMileage": "17.69 km/l",
-      "carType": "Sedan"
-    },
-    {
-      "model": "Taigun",
-      "averageMileage": "18.47 km/l",
-      "carType": "SUV"
-    }
-  ],
-  "Citroën": [
-    {
-      "model": "C3",
-      "averageMileage": "19.8 km/l",
-      "carType": "Hatchback"
-    },
-    {
-      "model": "C5 Aircross",
-      "averageMileage": "18.6 km/l",
-      "carType": "SUV"
-    }
-  ],
   "Aston Martin": [
     {
       "model": "Vantage",
@@ -308,6 +40,274 @@
       "model": "Continental GT",
       "averageMileage": "9 km/l",
       "carType": "Coupe"
+    }
+  ],
+  "Citroën": [
+    {
+      "model": "C3",
+      "averageMileage": "19.8 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "C5 Aircross",
+      "averageMileage": "18.6 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Honda": [
+    {
+      "model": "City",
+      "averageMileage": "17.8 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Amaze",
+      "averageMileage": "24.7 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Jazz",
+      "averageMileage": "16.6 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "WR-V",
+      "averageMileage": "23.7 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Hyundai": [
+    {
+      "model": "Grand i10 Nios",
+      "averageMileage": "20.7 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "i20",
+      "averageMileage": "20.35 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Verna",
+      "averageMileage": "21.3 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Creta",
+      "averageMileage": "21.8 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Venue",
+      "averageMileage": "24.1 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Jeep": [
+    {
+      "model": "Compass",
+      "averageMileage": "17.1 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Meridian",
+      "averageMileage": "15.7 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Kia": [
+    {
+      "model": "Seltos",
+      "averageMileage": "20.8 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Sonet",
+      "averageMileage": "24.1 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Carens",
+      "averageMileage": "21.3 km/l",
+      "carType": "MPV"
+    }
+  ],
+  "Mahindra": [
+    {
+      "model": "XUV300",
+      "averageMileage": "20 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Scorpio N",
+      "averageMileage": "15 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Thar",
+      "averageMileage": "15.2 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Bolero",
+      "averageMileage": "16.7 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Maruti Suzuki": [
+    {
+      "model": "Alto K10",
+      "averageMileage": "24.3 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Celerio",
+      "averageMileage": "26.68 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Wagon R",
+      "averageMileage": "23.56 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Swift",
+      "averageMileage": "24.8 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Dzire",
+      "averageMileage": "24.79 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Baleno",
+      "averageMileage": "22.94 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Grand Vitara",
+      "averageMileage": "27.97 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "MG (Morris Garages)": [
+    {
+      "model": "Hector",
+      "averageMileage": "17.41 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Astor",
+      "averageMileage": "15.43 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Gloster",
+      "averageMileage": "14.5 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Nissan": [
+    {
+      "model": "Magnite",
+      "averageMileage": "20 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Renault": [
+    {
+      "model": "Kwid",
+      "averageMileage": "22 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Triber",
+      "averageMileage": "20 km/l",
+      "carType": "MPV"
+    },
+    {
+      "model": "Kiger",
+      "averageMileage": "20 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Skoda": [
+    {
+      "model": "Slavia",
+      "averageMileage": "19.47 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Kushaq",
+      "averageMileage": "17.88 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Octavia",
+      "averageMileage": "15.81 km/l",
+      "carType": "Sedan"
+    }
+  ],
+  "Tata Motors": [
+    {
+      "model": "Tiago",
+      "averageMileage": "23.84 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Tigor",
+      "averageMileage": "20.3 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Altroz",
+      "averageMileage": "25.11 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Nexon",
+      "averageMileage": "24.08 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Harrier",
+      "averageMileage": "16.35 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Toyota": [
+    {
+      "model": "Urban Cruiser Hyryder",
+      "averageMileage": "27.97 km/l",
+      "carType": "SUV"
+    },
+    {
+      "model": "Innova Crysta",
+      "averageMileage": "15.6 km/l",
+      "carType": "MPV"
+    },
+    {
+      "model": "Fortuner",
+      "averageMileage": "10-12 km/l",
+      "carType": "SUV"
+    }
+  ],
+  "Volkswagen": [
+    {
+      "model": "Polo",
+      "averageMileage": "18.24 km/l",
+      "carType": "Hatchback"
+    },
+    {
+      "model": "Vento",
+      "averageMileage": "17.69 km/l",
+      "carType": "Sedan"
+    },
+    {
+      "model": "Taigun",
+      "averageMileage": "18.47 km/l",
+      "carType": "SUV"
     }
   ]
 }
