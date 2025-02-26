@@ -1,6 +1,6 @@
 import { round } from 'lodash';
 
-export function calculateFuelConsumption({ vehicleModel, fuelType, vehicleType, distanceDriven, averageSpeed = 50 }) {
+export function calculateFuelConsumption({ vehicleModel, fuelType = 'Petrol', vehicleType = 'Sedan', distanceDriven, averageSpeed = 50 }) {
   const baselineMileage = 18;
 
   let alphaBody;

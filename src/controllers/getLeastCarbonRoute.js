@@ -37,7 +37,7 @@ export default async function getLeastCarbonRoute(source, destination, temp_mode
   console.log('Inside getLeastCarbonRoute', { routes });
 
   for (let i = 0; i < routes.length; i++) {
-    routes[i].totalEnergy = calculateRouteEnergy(routes[i], temp_mode);
+    routes[i].totalEnergy = calculateRouteEnergy(routes[i], temp_mode, carData);
   }
 
   // sorting the routes based on the total energy

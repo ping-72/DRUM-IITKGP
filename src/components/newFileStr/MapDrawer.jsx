@@ -26,6 +26,8 @@ export default function MapDrawer() {
   const [exposure, setExposure] = useState(0);
   const [instructions, setInstructions] = useState([]);
 
+  const carData = useCar();
+
   // Route details state (for displaying route details later)
   const [shortestRoute, setShortestRoute] = useState({});
   const [fastestRoute, setFastestRoute] = useState({});
@@ -318,6 +320,7 @@ export default function MapDrawer() {
                       setBalancedRoute,
                       setLeastCarbonRoute,
                       setIsLoading,
+                      carData,
                     });
                   }
                   setupMap({

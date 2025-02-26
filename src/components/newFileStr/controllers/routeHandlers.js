@@ -159,6 +159,7 @@ export async function getRoutes({
   setBalancedRoute,
   setLeastCarbonRoute,
   setIsLoading,
+  carData,
 }) {
   // Check both source and destination is there ->
   if (source.value === '' || destination.value === '') {
@@ -211,7 +212,7 @@ export async function getRoutes({
 
       if (temp_routePreference === 'fastest') {
         console.log('Fastest Path...');
-        const res = await getFastestRoute(routes, temp_mode);
+        const res = await getFastestRoute(routes, temp_mode, carData);
         geojson = res.geojson;
         routes = res.routes;
         setDistance(routes[0].distance);
@@ -241,7 +242,7 @@ export async function getRoutes({
         }
       } else if (temp_routePreference === 'shortest') {
         console.log('Shortest Path...');
-        ({ geojson, routes } = await getShortestRoute(routes, temp_mode));
+        ({ geojson, routes } = await getShortestRoute(routes, temp_mode, carData));
         setDistance(routes[0].distance);
         if (temp_mode.includes('traffic')) {
           setTime(routes[0].time);
@@ -270,7 +271,7 @@ export async function getRoutes({
         }
       } else if (temp_routePreference === 'leap') {
         console.log('LEAP Path...');
-        ({ geojson, routes } = await getLeapRoute(routes, temp_mode));
+        ({ geojson, routes } = await getLeapRoute(routes, temp_mode, carData));
         setDistance(routes[0].distance);
         temp_routes.sort((a, b) => a.distance - b.distance);
         shortestRouteTime = temp_routes[0].time;
@@ -297,7 +298,7 @@ export async function getRoutes({
         }
       } else if (temp_routePreference === 'emission') {
         console.log('Emission Path...');
-        ({ geojson, routes } = await getLeastCarbonRoute(source, destination, temp_mode));
+        ({ geojson, routes } = await getLeastCarbonRoute(source, destination, temp_mode, carData));
         setDistance(routes[0].distance);
         temp_routes.sort((a, b) => a.distance - b.distance);
         shortestRouteTime = temp_routes[0].time;

@@ -4,21 +4,16 @@ const CarContext = createContext();
 
 export const CarProvider = ({ children }) => {
   // Initialize carData from localStorage if available,
-  const [carData, setCarData] = useState(() => {
-    const storedCarData = localStorage.getItem('carData');
-    return storedCarData
-      ? JSON.parse(storedCarData)
-      : {
-          company: '',
-          model: '',
-          productionYear: Number,
-          distanceDriven: Number,
-          averageSpeed: Number,
-          fuelType: '',
-          carType: '',
-          mileage: '',
-        };
-  });
+  const [carData, setCarData] = useState(() => ({
+    company: 'Default Company',
+    model: 'Default Model',
+    productionYear: 2020,
+    distanceDriven: 0,
+    averageSpeed: 0,
+    fuelType: 'Petrol',
+    carType: 'Sedan',
+    mileage: '20 km/l',
+  }));
 
   useEffect(() => {
     localStorage.setItem('carData', JSON.stringify(carData));

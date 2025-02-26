@@ -4,7 +4,7 @@ import calculateRouteEnergy from '../utils/calculateRouteEnergy.js';
 import { CarProvider, useCar } from '../components/newFileStr/contexts/Carcontext.js';
 import { calculateFuelConsumption } from '../utils/EmissionByCar.js';
 
-export default async function getFastestRoute(routes, mode) {
+export default async function getFastestRoute(routes, mode, carData) {
   if (!routes || !Array.isArray(routes) || routes.length === 0) {
     throw new Error('Invalid routes input: routes is undefined, not an array, or empty.');
   }
