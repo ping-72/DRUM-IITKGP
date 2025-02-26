@@ -62,6 +62,7 @@ const GetCarInformation = ({ onPredict }) => {
         {/* Car Company Dropdown */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Car Company</span>
             <select
               name="company"
               value={carData.company}
@@ -79,6 +80,7 @@ const GetCarInformation = ({ onPredict }) => {
         {/* Car Model Dropdown */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Car Model</span>
             <select
               name="model"
               value={carData.model}
@@ -96,6 +98,7 @@ const GetCarInformation = ({ onPredict }) => {
         {/* Production Year Input */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Production Year</span>
             <input
               type="number"
               name="productionYear"
@@ -111,6 +114,7 @@ const GetCarInformation = ({ onPredict }) => {
         {/* Fuel Type Dropdown */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Fuel Type</span>
             <select
               name="fuelType"
               value={carData.fuelType}
@@ -126,6 +130,7 @@ const GetCarInformation = ({ onPredict }) => {
         {/* Total Distance Driven Input */}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Total Distance Driven (KM)</span>
             <input
               type="number"
               name="distanceDriven"
@@ -143,19 +148,17 @@ const GetCarInformation = ({ onPredict }) => {
           <h2 className="text-xl font-bold">Route Preferences</h2>
           <Draggable onPosChange={handlePosChange}>
             {preferences.map((preference, index) => (
-              <div key={index} className="flex-item items-center gap-2 border border-black rounded p-2">
-                <span className="flex justify-between">
-                  <span onClick={() => handleUp(preference)} className="bg-gray-300 px-2 py-1 rounded-sm hover:bg-gray-400">
+              <div key={index} className="flex items-center gap-2 border border-black rounded p-2">
+                <span className="flex justify-between w-full">
+                  <button disabled className="px-2 py-1 rounded-sm ">
                     <span role="img" aria-label="up">
-                      {' '}
+                      ⬆️
                     </span>
-                  </span>
-                  {preference}
-                  <span onClick={() => handleDown(preference)} className="bg-gray-300 px-2 py-1 rounded-sm hover:bg-gray-400">
-                    <span role="img" aria-label="down">
-                      {' '}
-                    </span>
-                  </span>
+                  </button>
+                  <span className="flex-1 text-center">{preference}</span>
+                  <button disabled className="text-black px-2 py-1 rounded-sm ">
+                    <span> ⬇️ </span>
+                  </button>
                 </span>
               </div>
             ))}
