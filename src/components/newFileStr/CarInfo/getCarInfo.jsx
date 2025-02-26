@@ -134,7 +134,7 @@ const GetCarInformation = ({ onPredict }) => {
             <input
               type="number"
               name="distanceDriven"
-              value={carData.distanceDriven}
+              value={carData.distanceDriven || ''}
               onChange={handleCarDataChange}
               required
               placeholder="Total Distance Driven (KM)"
