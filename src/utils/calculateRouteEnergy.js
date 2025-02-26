@@ -1,49 +1,41 @@
-import getMassfromMode from './getMassfromMode';
+import { calculateFuelConsumption } from './EmissionByCar';
+import { useCar } from '../components/newFileStr/contexts/Carcontext';
 
 export default function calculateRouteEnergy(route, mode) {
-  const mass = getMassfromMode(mode);
-  const g = 9.8;
+  let totalFuelConsumption = 0;
+  const segments = route.instructions || [];
+  const carData = useCar();
 
-  // for carbon emssions we can find the total energy consumed by the vehicle
-  // and then also consider the fuel efficiency of the vehicle. We also need to consider
-  // the mass of the vehicle --> can take the average mass of the vehicle.
+  console.log('Inside calculateRouteEnergy', { route, carData });
 
-  console.log('Inside calculateRouteEnergy', { route });
+  // Loop over each segment (simple path) in the route.
+  for (let j = 0; j < segments.length; j++) {
+    const segment = segments[j];
+    const distanceMeters = segment.distance;
+    const timeSeconds = segment.time / 1000;
+    if (distanceMeters === 0 || timeSeconds === 0) continue;
 
-  route.totalEnergy = 0;
-  let segments = route.instructions;
-  console.log('segments', segments);
-  for (let j = 0; j < segments?.length; j++) {
-    const startIndex = segments[j].interval[0];
-    const endIndex = segments[j].interval[1];
+    // Compute average speed in km/h and distance in km.
+    const averageSpeedKmh = (distanceMeters / timeSeconds) * 3.6;
+    const distanceKm = distanceMeters / 1000;
 
-    console.log('startIndex', startIndex);
-    console.log('endIndex', endIndex);
+    // Prepare parameters from carData (passed from context) and segment info.
+    const params = {
+      vehicleModel: carData.model, // e.g., "2018"
+      fuelType: carData.fuelType, // e.g., "petrol" or "diesel"
+      vehicleType: carData.carType, // e.g., "sedan", "hatchback", or "suv"
+      distanceDriven: distanceKm, // segment distance in km
+      averageSpeed: averageSpeedKmh, // segment average speed in km/h
+    };
 
-    console.log(route.points.coordinates[endIndex]);
-    console.log(route.points.coordinates[startIndex][2]);
-    const heightGain =
-      route.points.coordinates[endIndex][2] - route.points.coordinates[startIndex][2] > 0
-        ? route.points.coordinates[endIndex][2] - route.points.coordinates[startIndex][2]
-        : -route.points.coordinates[endIndex][2] + route.points.coordinates[startIndex][2];
-    console.log('heightGain', heightGain);
-    const distance = segments[j].distance; // in meters
-    const time = segments[j].time / 1000; // now its in seconds
-    if (time == 0 && distance == 0) continue;
-    const averageVelocity = distance / time; // in m/s
-
-    // total potential energy = mass * gravity * height gain
-    const totalPotentialEnergy = mass * g * heightGain;
-    console.log('totalPotentialEnergy', totalPotentialEnergy);
-
-    // total kinetic energy = 0.5 * mass * velocity^2
-    const totalKineticEnergy = 0.5 * mass * averageVelocity * averageVelocity;
-    console.log('totalKineticEnergy', totalKineticEnergy);
-
-    // total energy = total potential energy + total kinetic energy
-    route.totalEnergy += totalPotentialEnergy + totalKineticEnergy;
-    console.log('totalEnergy', route.totalEnergy);
+    // Calculate fuel consumption for this segment.
+    const { fuelConsumption } = calculateFuelConsumption(params);
+    totalFuelConsumption += fuelConsumption;
   }
 
-  return route.totalEnergy / 1000;
+  // Attach the total fuel consumption (in litres) to the route.
+  route.totalFuelConsumption = totalFuelConsumption;
+  console.log('Total fuel consumption for route (litres):', totalFuelConsumption);
+
+  return totalFuelConsumption;
 }

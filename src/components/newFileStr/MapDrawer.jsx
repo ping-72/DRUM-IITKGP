@@ -260,10 +260,10 @@ export default function MapDrawer() {
               <br />
               <>
                 <div className="flex flex-col justify-evenly items-center w-full max-w-xs border rounded-md p-1 border-gray-300">
-                  <button onClick={() => setOpenDepartTime(!openDepartTime)}>
+                  <div onClick={() => setOpenDepartTime(!openDepartTime)} className="cursor-pointer">
                     {!openDepartTime ? 'Advanced Settings >' : 'Advanced Settings <'}
                     <br />
-                  </button>
+                  </div>
                   {openDepartTime && (
                     <div className="flex flex-col justify-evenly items-center w-full max-w-xs mt-4">
                       <label className="text-gray-700 text-sm">When will you be leaving?</label>
@@ -273,13 +273,13 @@ export default function MapDrawer() {
                         onChange={(e) => {
                           setDepartureTime(e.target.value);
                         }}>
-                        <option value="now">Now</option>
-                        <option value="+1">+1 hour</option>
-                        <option value="+2">+2 hours</option>
-                        <option value="+3">+3 hours</option>
-                        <option value="+4">+4 hours</option>
-                        <option value="+5">+5 hours</option>
-                        <option value="+6">+6 hours</option>
+                        <option value="0">Now</option>
+                        <option value="1">+1 hour</option>
+                        <option value="2">+2 hours</option>
+                        <option value="3">+3 hours</option>
+                        <option value="4">+4 hours</option>
+                        <option value="5">+5 hours</option>
+                        <option value="6">+6 hours</option>
                       </select>
                     </div>
                   )}
@@ -343,8 +343,11 @@ export default function MapDrawer() {
           <div>
             {routePreference !== 'all' && (
               <div className="text-center text-xl mt-4">
+                Distance -{' '}
                 <span className="text-blue-500">{isLoading ? prettyMetric(0).humanize() : prettyMetric(distance).humanize()}</span>
                 <span className="text-gray-500 mx-2">|</span>
+                <br />
+                Time -{' '}
                 <span className="text-green-400">
                   {isLoading
                     ? prettyMilliseconds(0)
@@ -353,7 +356,8 @@ export default function MapDrawer() {
                     : prettyMilliseconds(time)}{' '}
                 </span>
                 <span className="text-gray-500 mx-2">|</span>
-                <span className="text-red-500">{isLoading ? 0 : exposure?.toFixed(2)} μg/㎥ h</span>
+                <br />
+                Exposure - <span className="text-red-500">{isLoading ? 0 : exposure?.toFixed(2)} μg/㎥ h</span>
               </div>
             )}
             {routePreference !== 'all' && (

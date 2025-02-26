@@ -160,19 +160,19 @@ export async function getRoutes({
   setLeastCarbonRoute,
   setIsLoading,
 }) {
+  // Check both source and destination is there ->
   if (source.value === '' || destination.value === '') {
     console.log('Please select a source and destination.');
     return;
-  }
-  if (source.value !== '' && destination.value !== '') {
+  } else {
     console.log('Running getRoutes with mode:', mode, 'and routePreference:', routePreference);
     try {
       let temp_mode = mode;
       let temp_routePreference = routePreference;
 
       // Adjust the mode if needed based on the selected route preference.
-      function adjustModeRoutePreference(temp_routePreference) {
-        switch (temp_routePreference) {
+      function adjustModeRoutePreference(pref) {
+        switch (pref) {
           case 'leap':
             if (temp_mode === 'driving-traffic') {
               temp_mode = 'car'; // ignore traffic for LEAP path.
@@ -190,6 +190,8 @@ export async function getRoutes({
             break;
         }
       }
+
+      // Adjust the mode if needed based on the selected route preference.
       adjustModeRoutePreference(temp_routePreference);
 
       let routes;
@@ -203,7 +205,7 @@ export async function getRoutes({
 
       let geojson;
       let routeId = `${temp_mode}-${temp_routePreference}-${source.position[0]}-${source.position[1]}-${destination.position[0]}-${destination.position[1]}-route`;
-      let temp_routes = routes;
+      let temp_routes = [...routes];
       let shortestRouteTime;
       let shortestRouteDistance;
 
