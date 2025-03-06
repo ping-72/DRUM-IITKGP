@@ -3,16 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Draggable } from 'react-drag-reorder';
 import CarData from '../carMileageData/mileageData.json';
 import { CarProvider, useCar } from '../contexts/Carcontext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 
 const carCompanies = Object.keys(CarData);
 const initialCompany = carCompanies[0];
 const initialModels = CarData[initialCompany];
 const initialModel = initialModels[0].model;
 
+// Custom reorder helper
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -20,110 +17,164 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const GetCarInformation = () => {
+const GetCarInformation = ({ onPredict }) => {
+  // Access carData and updateCarData from the CarProvider
   const { carData, updateCarData } = useCar();
+
+  // Set default values if not already present in the context
   carData.company = carData.company || initialCompany;
   carData.model = carData.model || initialModel;
   carData.productionYear = carData.productionYear || '2020';
   carData.fuelType = carData.fuelType || 'Petrol';
   carData.distanceDriven = carData.distanceDriven || '1000';
+  carData.averageSpeed = carData.averageSpeed || '50';
+  carData.mileage = carData.mileage || '24.3 km/l';
 
   const navigate = useNavigate();
-  const [preferences, setPreferences] = useState(['Shortest', 'Faster', 'Least Exposure', 'Least Emission']);
 
   const handleCarDataChange = (e) => {
     const { name, value } = e.target;
     updateCarData({ [name]: value });
   };
 
+  // Local state for route preferences
+  const [preferences, setPreferences] = useState(['Shortest', 'Faster', 'Least Exposure', 'Least Emission']);
+
+  // Update the preferences order when the drag position changes
   const handlePosChange = (currentPos, newPos) => {
     const newOrder = reorder(preferences, currentPos, newPos);
     setPreferences(newOrder);
   };
 
+  // Get the models for the currently selected company.
+  let modelsForCompany = CarData[carData.company] || [];
+  useEffect(() => {
+    modelsForCompany = CarData[carData.company] || [];
+  }, [carData]);
+
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
-      <Card className="w-full max-w-lg bg-white shadow-xl rounded-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-gray-800">Car Journey Analysis</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-5">
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Car Company</label>
-              <Select name="company" value={carData.company} onValueChange={(value) => updateCarData({ company: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Car Company" />
-                </SelectTrigger>
-                <SelectContent>
-                  {carCompanies.map((company) => (
-                    <SelectItem key={company} value={company}>
-                      {company}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+    <div className="px-4 md:px-40 flex flex-1 justify-center py-5">
+      <form className="flex flex-col w-full max-w-[512px] py-5">
+        <div className="flex flex-wrap justify-between gap-3 p-4">
+          <h1 className="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight">Car Journey Analysis</h1>
+        </div>
 
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Car Model</label>
-              <Select name="model" value={carData.model} onValueChange={(value) => updateCarData({ model: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Car Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(CarData[carData.company] || []).map((modelData) => (
-                    <SelectItem key={modelData.model} value={modelData.model}>
-                      {modelData.model} ({modelData.carType})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Car Company Dropdown */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Car Company</span>
+            <select
+              name="company"
+              value={carData.company}
+              onChange={handleCarDataChange}
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
+              {carCompanies.map((company) => (
+                <option key={company} value={company}>
+                  {company}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Production Year</label>
-              <Input type="number" name="productionYear" value={carData.productionYear} onChange={handleCarDataChange} />
-            </div>
+        {/* Car Model Dropdown */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Car Model</span>
+            <select
+              name="model"
+              value={carData.model}
+              onChange={handleCarDataChange}
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
+              {modelsForCompany.map((modelData) => (
+                <option key={modelData.model} value={modelData.model}>
+                  {modelData.model} ({modelData.carType})
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Fuel Type</label>
-              <Select name="fuelType" value={carData.fuelType} onValueChange={(value) => updateCarData({ fuelType: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Fuel Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Petrol">Petrol</SelectItem>
-                  <SelectItem value="Diesel">Diesel</SelectItem>
-                  <SelectItem value="EV">EV</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Production Year Input */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Production Year</span>
+            <input
+              type="number"
+              name="productionYear"
+              value={carData.productionYear}
+              onChange={handleCarDataChange}
+              required
+              placeholder="Production Year (e.g., 2020)"
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
+            />
+          </label>
+        </div>
 
-            <div className="space-y-2">
-              <label className="font-semibold text-gray-700">Total Distance Driven (KM)</label>
-              <Input type="number" name="distanceDriven" value={carData.distanceDriven} onChange={handleCarDataChange} />
-            </div>
+        {/* Fuel Type Dropdown */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Fuel Type</span>
+            <select
+              name="fuelType"
+              value={carData.fuelType}
+              onChange={handleCarDataChange}
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base">
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="EV">EV</option>
+            </select>
+          </label>
+        </div>
 
-            <div className="space-y-3">
-              <h2 className="text-lg font-bold text-gray-800">Route Preferences</h2>
-              <Draggable onPosChange={handlePosChange}>
-                {preferences.map((preference, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-200 p-3 rounded-lg shadow-sm cursor-move">
-                    <span>{preference}</span>
-                  </div>
-                ))}
-              </Draggable>
-            </div>
+        {/* Total Distance Driven Input */}
+        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+          <label className="flex flex-col min-w-40 flex-1">
+            <span className="text-sm font-semibold">Total Distance Driven (KM)</span>
+            <input
+              type="number"
+              name="distanceDriven"
+              value={carData.distanceDriven || ''}
+              onChange={handleCarDataChange}
+              required
+              placeholder="Total Distance Driven (KM)"
+              className="form-input flex w-full rounded-xl border border-[#d0dbe6] bg-[#f8fafb] p-[15px] text-base"
+            />
+          </label>
+        </div>
 
-            <div className="flex justify-center pt-4">
-              <Button onClick={() => navigate('/routes')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg">
-                Go to Routes
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+        {/* User-preference for custom routing (drag and reorder options) */}
+        <div className="flex flex-col max-w-[480px] gap-4 px-4 py-3">
+          <h2 className="text-xl font-bold">Route Preferences</h2>
+          <Draggable onPosChange={handlePosChange}>
+            {preferences.map((preference, index) => (
+              <div key={index} className="flex items-center gap-2 border border-black rounded p-2">
+                <span className="flex justify-between w-full">
+                  <button disabled className="px-2 py-1 rounded-sm ">
+                    <span role="img" aria-label="up">
+                      ⬆️
+                    </span>
+                  </button>
+                  <span className="flex-1 text-center">{preference}</span>
+                  <button disabled className="text-black px-2 py-1 rounded-sm ">
+                    <span> ⬇️ </span>
+                  </button>
+                </span>
+              </div>
+            ))}
+          </Draggable>
+        </div>
+
+        {/* Submit and Navigation Buttons */}
+        <div className="flex justify-center gap-4 mt-6">
+          <button
+            type="submit"
+            className="py-2 px-4 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+            onClick={() => navigate('/routes')}>
+            Go to Routes
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
